@@ -1,67 +1,68 @@
 import tkinter as tk
-import secrets
+import random
 import string
-import pyperclip
+import pyperclip  # Make sure pyperclip is installed by running 'pip install pyperclip' in python console
 
-def generate_password(length, include_digits, include_special_chars):
-    characters = string.ascii_letters
-    
-    if include_digits:
-        characters += string.digits
-    
-    if include_special_chars:
-        characters += string.punctuation
-    
-    password = ''.join(secrets.choice(characters) for _ in range(length))
-    return password
 
-def copy_to_clipboard(password):
+# Function to generate a password
+def generate_password():
+    password_length = int(length_var.get())
+    password_complexity = complexity_var.get()
+
+    if password_complexity == "Alphanumeric":
+        characters = string.ascii_letters + string.digits
+    else:
+        characters = string.ascii_letters + string.digits + string.punctuation
+
+    password = ''.join(random.choice(characters) for _ in range(password_length))
+    password_var.set(password)
+    # Change the background color to a random color
+    window.configure(bg=random_color())
+
+
+# Function to copy the password to the clipboard
+def copy_to_clipboard():
+    password = password_var.get()
     pyperclip.copy(password)
 
-def generate_and_copy_password():
-    password_length = int(length_var.get())
-    include_digits = include_digits_var.get()
-    include_special_chars = include_special_chars_var.get()
-    
-    password = generate_password(password_length, include_digits, include_special_chars)
-    password_var.set(password)
-    
-    copy_to_clipboard(password)
 
-def main():
-    root = tk.Tk()
-    root.title("Random Password Generator")
+# Function to generate a random background color
+def random_color():
+    return "#{:02x}{:02x}{:02x}".format(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
-    frame = tk.Frame(root)
-    frame.pack(padx=20, pady=20)
 
-    # Password Length
-    length_label = tk.Label(frame, text="Number of Characters (12-20):")
-    length_label.pack()
-    length_var = tk.StringVar(value="12")
-    length_entry = tk.Entry(frame, textvariable=length_var)
-    length_entry.pack()
+# Create the main window
+window = tk.Tk()
+window.title("SecureGen Password Generator")
 
-    # Include Digits
-    include_digits_var = tk.BooleanVar()
-    include_digits_checkbox = tk.Checkbutton(frame, text="Include Digits (0-9)", variable=include_digits_var)
-    include_digits_checkbox.pack()
+# Create and set variables
+length_var = tk.StringVar()
+complexity_var = tk.StringVar()
+password_var = tk.StringVar()
 
-    # Include Special Characters
-    include_special_chars_var = tk.BooleanVar()
-    include_special_chars_checkbox = tk.Checkbutton(frame, text="Include Special Characters", variable=include_special_chars_var)
-    include_special_chars_checkbox.pack()
+# Create widgets
+length_label = tk.Label(window, text="Password Length (12-20):")
+length_entry = tk.Entry(window, textvariable=length_var)
+complexity_label = tk.Label(window, text="Password Complexity:")
+complexity_options = ["Alphanumeric", "Alphanumeric + Special"]
+complexity_menu = tk.OptionMenu(window, complexity_var, *complexity_options)
+generate_button = tk.Button(window, text="Generate Password", command=generate_password)
+password_label = tk.Label(window, text="Generated Password:")
+password_display = tk.Entry(window, textvariable=password_var, state="readonly")
+copy_button = tk.Button(window, text="Copy to Clipboard", command=copy_to_clipboard)
 
-    # Generate and Copy Password Button
-    generate_button = tk.Button(frame, text="Generate and Copy Password", command=generate_and_copy_password)
-    generate_button.pack()
+# Grid layout
+length_label.grid(row=0, column=0, padx=10, pady=5)
+length_entry.grid(row=0, column=1, padx=10, pady=5)
+complexity_label.grid(row=1, column=0, padx=10, pady=5)
+complexity_menu.grid(row=1, column=1, padx=10, pady=5)
+generate_button.grid(row=2, column=0, columnspan=2, padx=10, pady=5)
+password_label.grid(row=3, column=0, padx=10, pady=5)
+password_display.grid(row=3, column=1, padx=10, pady=5)
+copy_button.grid(row=4, column=0, columnspan=2, padx=10, pady=5)
 
-    # Display Password
-    password_var = tk.StringVar()
-    password_label = tk.Label(frame, textvariable=password_var)
-    password_label.pack()
+# Initialize background color
+window.configure(bg=random_color())
 
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+# Start the GUI main loop
+window.mainloop()
