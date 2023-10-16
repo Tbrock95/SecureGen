@@ -1,6 +1,6 @@
 #### SecureGen
 #### Easy to use secure password generator with copy function enabled by pyperclip
-#### Created by Tyler Crabtree-Brock for SDEV140
+#### Created by T.C.Brock for SDEV140
 #### 2023
 
 **SecureGen Random Password Generator User Guide**
