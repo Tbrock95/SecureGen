@@ -10,11 +10,12 @@ image_dir = os.path.join(script_dir, "images")
 
 # Function to generate a password
 def generate_password():
-    # Get the input password length
     password_length_str = length_var.get()
 
-    # Check if the input is a valid number and if it's within the specified range
-    if password_length_str.isdigit():
+    if not password_length_str.isdigit():
+        error_message_var.set("Please enter a valid number")
+        show_error_message()
+    else:
         password_length = int(password_length_str)
         if 12 <= password_length <= 20:
             password_complexity = complexity_var.get()
@@ -25,13 +26,9 @@ def generate_password():
 
             password = ''.join(random.choice(characters) for _ in range(password_length))
             password_var.set(password)
-            pass
         else:
             error_message_var.set("Password length must be between 12 and 20")
             show_error_message()
-    else:
-        error_message_var.set("Please enter a valid number")
-        show_error_message()
 
     # Change the background color to a random color
     window.configure(bg=random_color())
@@ -93,8 +90,8 @@ key_image_path = os.path.join(image_dir, "key.gif")
 padlock_image_path = os.path.join(image_dir, "padlock.gif")
 key_image = PhotoImage(file=key_image_path)
 padlock_image = PhotoImage(file=padlock_image_path)
-key_image = key_image.subsample(3)
-padlock_image = padlock_image.subsample(3)
+key_image = key_image.subsample(5)
+padlock_image = padlock_image.subsample(6)
 
 # Create widgets
 length_label = tk.Label(window, text="Password Length (12-20):")
@@ -109,7 +106,6 @@ copy_button = tk.Button(window, text="Copy to Clipboard", command=copy_to_clipbo
 key_label = tk.Label(window, image=key_image)
 padlock_label = tk.Label(window, image=padlock_image)
 show_password_button = tk.Button(window, text="Show Password", command=show_password)
-error_label = tk.Label(window, textvariable=error_message_var, fg="red")
 
 
 
